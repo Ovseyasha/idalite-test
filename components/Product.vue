@@ -5,7 +5,8 @@
         <Rating :rating="product.rating" />
       </div>
       <CartBtn :id="product.id" />
-      <img :src="`http://front-test.idalite.com${product.photo}`" :alt="product.name" class="product__img">
+      <img v-lazy-load :src="`http://front-test.idalite.com${product.photo}`" :alt="product.name" class="product__img">
+      <!-- <img v-lazy-load src="/check.png" :alt="product.name" class="product__img"> -->
       <div class="product__desc">
         <h3 class="product__name">
           {{ product.name }}
@@ -44,6 +45,9 @@ export default {
   position: relative
   &__wrapper
     padding: 16px
+    display: flex
+    flex-direction: column
+    justify-content: space-between
   &__score
     font-weight: bold
     font-size: 10px
@@ -61,6 +65,7 @@ export default {
         fill: black
   &__img
     max-width: 100%
+    align-self: center
   &__desc
     display: flex
     justify-content: flex-start

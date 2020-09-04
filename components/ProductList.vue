@@ -46,4 +46,8 @@ $m: 16px
   &__item
     margin: 16px
     flex-basis: calc(25% - #{ $m * 2 })
+    @media (max-width: 1264px)
+      flex-basis: calc(33% - #{ $m * 2 })
+    @media (max-width: 960px)
+      flex-basis: calc(50% - #{ $m * 2 })
 </style>

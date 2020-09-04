@@ -67,7 +67,10 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/pwa'
+    '@nuxtjs/pwa',
+    ['nuxt-lazy-load', {
+      defaultImage: '/check.png'
+    }]
   ],
   /*
    ** Axios module configuration

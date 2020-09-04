@@ -79,7 +79,7 @@
                       </div>
                     </div>
                     <div class="product__score">
-                      {{ p.rating }}
+                      <Rating :rating="p.rating" />
                     </div>
                   </div>
                   <button class="product__delete" @click="remove(p.id)">
@@ -147,7 +147,8 @@
         </div>
       </div>
     </transition>
-    <transition
+    <transition 
+      mode="out-in"
       enter-active-class="animate__animated animate__faster  animate__fadeIn"
       leave-active-class="animate__animated animate__faster  animate__fadeOut"
     >
@@ -292,6 +293,12 @@ input
   right: 0
   height: 100%
   width: 33%
+  @media (max-width: 1264px)
+    width: 50%
+  @media (max-width: 960px)
+    width: 75%
+  @media (max-width: 720px)
+    width: 100%
   display: flex
   justify-content: center
   &__chekout

@@ -60,6 +60,7 @@ export default {
       top: -2px
   &__options
     padding-top: 8px
+    padding-bottom: 8px
     width: 100%
     position: absolute
     z-index: 2000

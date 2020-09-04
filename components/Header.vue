@@ -35,6 +35,14 @@ export default {
     justify-content: space-between
     align-items: center
     width: 1264px
+    @media (max-width: 1264px)
+      width: 960px
+    @media (max-width: 960px)
+      width: 720px
+    @media (max-width: 720px)
+      width: 540px
+    @media (max-width: 540px)
+      width: 90%
     a
       text-decoration: none
   &__item

@@ -44,6 +44,10 @@ export default {
 .categories
   margin: 0
   padding: 0
+  @media (max-width: 1264px)
+    width: 100%
+    display: flex
+    justify-content: space-between
   &__item
     margin-bottom: 16px
     list-style: none

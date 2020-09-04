@@ -1,3 +1,4 @@
+import cookie from 'vue-cookie'
 export const state = () => ({
   cart: []
 })
@@ -20,6 +21,7 @@ export const getters = {
 export const mutations = {
   add (state, payload) {
     state.cart.push(payload)
+    cookie.set('cart', JSON.stringify(state.cart), 1)
   },
   remove (state, payload) {
     state.cart.forEach((p, ind) => {
@@ -27,6 +29,14 @@ export const mutations = {
         state.cart.splice(ind, 1)
       }
     })
+    cookie.set('cart', JSON.stringify(state.cart), 1)
+  },
+  clear (state) {
+    state.cart = []
+    cookie.set('cart', JSON.stringify(state.cart), 1)
+  },
+  read (state, payload) {
+    state.cart = payload
   }
 }
 export const actions = {
@@ -37,6 +47,9 @@ export const actions = {
     commit('remove', payload)
   },
   read ({ commit }) {
-    commit('read')
+    commit('read', JSON.parse(cookie.get('cart')))
+  },
+  clear ({ commit }) {
+    commit('clear')
   }
 }

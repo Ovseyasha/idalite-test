@@ -31,6 +31,7 @@ body
 .container
   padding-top: 98px
   .page
+    overflow: hidden
     display: flex
     justify-content: center
     &__wrapper

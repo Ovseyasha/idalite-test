@@ -14,6 +14,17 @@ export const getters = {
       }
     })
     return products
+  },
+  inCart: state => (cart) => {
+    const products = []
+    state.products.forEach((p) => {
+      cart.forEach((id) => {
+        if (p.id === id) {
+          products.push(p)
+        }
+      })
+    })
+    return products
   }
 }
 export const mutations = {

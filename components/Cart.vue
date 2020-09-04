@@ -39,10 +39,10 @@
       leave-active-class="animate__animated animate__faster  animate__slideOutRight"
     >
       <div v-if="modal" class="cart__modal modal">
-        <div class="modal__wrapper">
+        <div class="modal__wrapper" :style="count > 3? 'overflow-y: auto' : ''">
           <div class="modal__header">
             <h1 class="modal__h">Корзина</h1>
-            <button class="modal__close" @click="modal = !modal">
+            <button class="modal__close" @click="close">
               <svg
                 width="14"
                 height="14"
@@ -67,14 +67,22 @@
             <template v-if="count > 0">
               <p class="modal__sub">Товары в корзине</p>
               <div class="modal__items">
-                <div class="product">
-                  <img src alt class="product__img" />
+                <div class="product" v-for="p in productsInCart" :key="p.id">
+                  <img :src="`http://front-test.idalite.com${p.photo}`" :alt="p.name" class="product__img" />
                   <div class="product__desc">
-                    <div class="product__title">ruksak</div>
-                    <div class="product__price">1500 Rub</div>
-                    <div class="product__score">4</div>
+                    <div class="product__info">
+                      <div class="product__title">
+                        {{ p.name }}
+                      </div>
+                      <div class="product__price">
+                        {{ p.price | price }}
+                      </div>
+                    </div>
+                    <div class="product__score">
+                      {{ p.rating }}
+                    </div>
                   </div>
-                  <button class="product__delete">
+                  <button class="product__delete" @click="remove(p.id)">
                     <svg
                       width="32"
                       height="32"
@@ -106,22 +114,35 @@
                   </button>
                 </div>
               </div>
-              <form class="modal__form">
+              <form class="modal__form" @submit.prevent="send">
                 <p class="modal__sub">Оформить заказ</p>
-                <input class="modal__input" type="text" placeholder="Ваше имя" />
-                <input class="modal__input" type="tel" placeholder="Телефон" />
-                <input class="modal__input" type="text" placeholder="Адрес" />
+                <input class="modal__input" :class="{'modal__input_error' : $v.name.$error}" type="text" v-model.trim="$v.name.$model" placeholder="Ваше имя" />
+                <IMaskComponent class="modal__input" :class="phone.length !== 10 ? 'modal__input_error' : ''" :mask="'+7 (000) 000-00-00'" v-model="$v.phone.$model" placeholder="Телефон"/>
+                <input class="modal__input" :class="{'modal__input_error' : $v.adress.$error}" type="text" v-model.trim="$v.adress.$model" placeholder="Адрес" />
                 <button class="modal__btn" type="submit">Отправить</button>
+                <div class="modal__error" v-if="$v.$error">
+                  <p v-if="!$v.name.required && $v.name.$dirty">Введите имя!</p>
+                  <p v-if="!$v.name.minLength">Слишком короткое имя</p>
+                  <p v-if="!$v.phone.required && $v.phone.$dirty">Введите номер!</p>
+                  <p v-if="!$v.phone.minLength">Некорректный номер</p>
+                  <p v-if="!$v.adress.required && $v.adress.$dirty">Введите адрес!</p>
+                  <p v-if="!$v.adress.minLength">Слишком короткий адрес</p>
+                </div>
               </form>
-              <!--сделать для пустой корзины и для завершения заказа  -->
             </template>
-            <template v-if="count === 0">
+            <template v-if="count === 0 && !checkout">
               <h2 class="modal__empty">
                 Пока что вы ничего не добавили в корзину.
               </h2>
               <button class="modal__btn" @click="modal = !modal">Перейти к выбору</button>
             </template>
-            <template v-if="checkout">sending</template>
+            <template v-if="checkout">
+              <div class="modal__chekout">
+                <img src="/check.png" alt="check">
+                <h2>Заявка успешно отправлена</h2>
+                <p>Вскоре наш менеджер свяжется с Вами</p>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -136,11 +157,40 @@
 </template>
 
 <script>
+import { IMaskComponent } from 'vue-imask'
+import { required, minLength } from 'vuelidate/lib/validators'
 export default {
+  components: {
+    IMaskComponent
+  },
+  filters: {
+    price (str) {
+      return `${str} ₽`
+    }
+  },
   data () {
     return {
       modal: false,
-      checkout: false
+      checkout: false,
+      name: '',
+      phone: '',
+      adress: '',
+      lenName: 2,
+      lenAdress: 8
+    }
+  },
+  validations: {
+    name: {
+      required,
+      minLength: minLength(2)
+    },
+    adress: {
+      required,
+      minLength: minLength(8)
+    },
+    phone: {
+      required,
+      minLength: minLength(18)
     }
   },
   computed: {
@@ -149,14 +199,40 @@ export default {
     },
     count () {
       return this.$store.getters['cart/count']
+    },
+    productsInCart () {
+      return this.$store.getters['products/inCart'](this.cart)
     }
   },
-  mounted () {
-    // прочитать диспатч
+  async mounted () {
+    this.$store.dispatch('cart/read')
+    if (this.$store.getters['products/get'].length === 0) {
+      await this.$store.dispatch('products/read')
+    }
   },
   methods: {
     openCart () {
       this.modal = true
+    },
+    remove (id) {
+      this.$store.dispatch('cart/remove', id)
+    },
+    async send () {
+      try {
+        this.$v.$touch()
+        if (!this.$v.$error) {
+          await this.$store.dispatch('cart/clear')
+          this.checkout = true
+          this.name = ''
+          this.phone = ''
+          this.adress = ''
+        }
+      } catch (error) {
+      }
+    },
+    close () {
+      this.modal = false
+      this.checkout = false
     }
   }
 }
@@ -196,7 +272,6 @@ input
     justify-content: center
     align-items: center
     background: $grey
-  &__btn
   &__modal
     position: fixed
     z-index: 3000
@@ -219,9 +294,37 @@ input
   width: 33%
   display: flex
   justify-content: center
+  &__chekout
+    margin-top: 50%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
   &__wrapper
     margin-top: 25px
     width: 80%
+    &::-webkit-scrollbar-button
+      background-image: none
+      background-repeat: no-repeat
+      width: 4px
+      height: 0px
+    &::-webkit-scrollbar-track
+      background-color: #F8F8F8
+    &::-webkit-scrollbar-thumb
+      -webkit-border-radius: 0px
+      border-radius: 2px
+      background-color: lighten(#959DAD, 20%)
+    &::-webkit-scrollbar-thumb
+      background-clip: padding-box
+      &:hover
+        background-color: #959DAD
+    &::-webkit-resize
+      background-image: none
+      background-repeat: no-repeat
+      width: 4px
+      height: 0px
+    &::-webkit-scrollbar
+      width: 6px
   &__header
     display: flex
     justify-content: space-between
@@ -245,18 +348,33 @@ input
     color: #000000
   &__items
     display: flex
+    flex-direction: column
     .product
+      margin-bottom: 12px
+      background: #FFFFFF
+      box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.05)
+      border-radius: 8px
       width: 100%
       display: flex
       justify-content: space-between
       &__img
+        height: 120px
+        width: auto
       &__desc
+        flex-grow: 2
         display: flex
         flex-direction: column
         justify-content: space-between
+        padding: 12px
         font-size: 14px
         line-height: 18px
+        font-style: normal
+        font-weight: normal
       &__title
+        text-transform: lowercase
+        margin-bottom: 6px
+        &:first-letter
+          text-transform: uppercase
         color: #59606D
       &__price
         font-weight: bold
@@ -266,7 +384,9 @@ input
         font-size: 10px
         line-height: 13px
         color: #F2C94C
+        align-contetn: flex-end
   &__form
+    margin-bottom: 60px
     width: 100%
     display: flex
     flex-direction: column
@@ -289,4 +409,13 @@ input
     width: 100%
     &:active
       background: #59606D
+  &__error
+    margin: 0
+    margin-top: 20px
+    padding: 0
+    p
+      margin: 0
+      &:before
+        content: '!! '
+        color: #EB5757
 </style>

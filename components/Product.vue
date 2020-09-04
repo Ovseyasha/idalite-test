@@ -2,7 +2,7 @@
   <div class="product">
     <div class="product__wrapper">
       <div class="product__score">
-        {{ product.rating }}
+        <Rating :rating="product.rating" />
       </div>
       <CartBtn :id="product.id" />
       <img :src="`http://front-test.idalite.com${product.photo}`" :alt="product.name" class="product__img">
@@ -48,7 +48,6 @@ export default {
     font-weight: bold
     font-size: 10px
     line-height: 13px
-    color: #F2C94C
     position: absolute
     left: 16px
   &__add

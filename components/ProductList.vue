@@ -1,6 +1,6 @@
 <template>
   <div class="products">
-    <ProductFilter class="products__filter" />
+    <ProductFilter class="products__filter" @select="filterUpd" />
     <transition-group class="products__items" enter-active-class="animate__animated  animate__fadeIn" leave-active-class="animate__animated  animate__fadeOut">
       <Product v-for="p in products" :key="p.id" class="products__item" :product="p" />
     </transition-group>
@@ -9,14 +9,24 @@
 
 <script>
 export default {
+  data () {
+    return {
+      filter: 'price'
+    }
+  },
   computed: {
     products () {
-      return this.$store.getters['products/getByCategory'](this.$route.params.id)
+      return this.$store.getters['products/getByCategoryFilter']({ id: this.$route.params.id, filter: this.filter })
     }
   },
   async mounted () {
     if (this.$store.getters['products/get'].length === 0) {
       await this.$store.dispatch('products/read')
+    }
+  },
+  methods: {
+    filterUpd (v) {
+      this.filter = v.type
     }
   }
 }

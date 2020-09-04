@@ -15,6 +15,36 @@ export const getters = {
     })
     return products
   },
+  getByCategoryFilter: state => ({ id, filter }) => {
+    const products = []
+    state.products.forEach((p) => {
+      if (p.category === +id) {
+        products.push(p)
+      }
+    })
+    if (filter === 'price') {
+      products.sort((a, b) => {
+        if (+a[filter] < +b[filter]) {
+          return -1
+        }
+        if (+a[filter] > +b[filter]) {
+          return 1
+        }
+        return 0
+      })
+    } else if (filter === 'rating') {
+      products.sort((a, b) => {
+        if (+a[filter] < +b[filter]) {
+          return 1
+        }
+        if (+a[filter] > +b[filter]) {
+          return -1
+        }
+        return 0
+      })
+    }
+    return products
+  },
   inCart: state => (cart) => {
     const products = []
     state.products.forEach((p) => {

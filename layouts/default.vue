@@ -5,7 +5,7 @@
       <div class="page">
         <div class="page__wrapper">
           <Category class="page__cat" />
-          <transition mode="out-in" leave-active-class="animate__animated animate__fast animate__fadeOut" enter-active-class="animate__animated animate__fast animate__slideInRight">
+          <transition mode="out-in" leave-active-class="animate__animated animate__fadeOut" enter-active-class="animate__animated animate__slideInRight">
             <Nuxt />
           </transition>
         </div>

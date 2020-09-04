@@ -15,7 +15,7 @@
 export default {
   props: {
     rating: {
-      type: String,
+      type: Number,
       default: null
     }
   },

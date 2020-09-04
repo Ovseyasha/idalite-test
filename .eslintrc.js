@@ -11,8 +11,9 @@ module.exports = {
     '@nuxtjs',
     'plugin:nuxt/recommended'
   ],
-  plugins: [
-  ],
+  plugins: [],
   // add your custom rules here
-  rules: {}
+  rules: {
+    'space-before-function-paren': ['error', 'always']
+  }
 }

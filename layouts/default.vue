@@ -16,7 +16,6 @@
 
 <script>
 export default {
-
 }
 </script>
 
@@ -27,7 +26,6 @@ body
   padding: 0
 *
   font-family: 'PT Sans', sans-serif
-.main
 .container
   padding-top: 98px
   .page

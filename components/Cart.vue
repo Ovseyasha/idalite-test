@@ -152,7 +152,7 @@
       enter-active-class="animate__animated animate__faster  animate__fadeIn"
       leave-active-class="animate__animated animate__faster  animate__fadeOut"
     >
-      <div v-if="modal" class="cart__popup" @click="modal = !modal" />
+      <div v-if="modal" class="cart__popup" @click="close" />
     </transition>
   </div>
 </template>

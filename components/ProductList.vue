@@ -44,10 +44,12 @@ $m: 16px
     display: flex
     flex-wrap: wrap
   &__item
-    margin: 16px
-    flex-basis: calc(25% - #{ $m * 2 })
+    margin: #{$m / 2}
+    flex-basis: calc(25% - #{ $m })
     @media (max-width: 1264px)
-      flex-basis: calc(33% - #{ $m * 2 })
+      flex-basis: calc(33% - #{ $m })
     @media (max-width: 960px)
-      flex-basis: calc(50% - #{ $m * 2 })
+      flex-basis: calc(50% - #{ $m })
+    @media (max-width: 720px)
+      flex-basis: calc(100% - #{ $m })
 </style>

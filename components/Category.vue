@@ -1,8 +1,15 @@
 <template>
   <!-- eslint-disable -->
   <div class="main">
-    <h1 class="header">Каталог</h1>
-    <ul class="categories">
+    <h1 class="header">
+      Каталог
+      <button @click="menu = !menu" class="btn">
+        <span class="btn__line"></span>
+        <span class="btn__line"></span>
+        <span class="btn__line"></span>
+      </button>
+    </h1>
+    <ul class="categories" :style="menu ? 'display: block' : ''">
       <nuxt-link class="categories__item" tag="li" v-for="c in categories" :key="c.id" :to="`/category/${c.id}`" >
         {{ c.name }}
       </nuxt-link>
@@ -12,6 +19,11 @@
 
 <script>
 export default {
+  data () {
+    return {
+      menu: false
+    }
+  },
   computed: {
     categories () {
       return this.$store.getters['category/get']
@@ -41,13 +53,31 @@ export default {
   margin: 0
   padding: 0
   margin-bottom: 24px
+  display: flex
+  align-items: center
+  .btn
+    background: none
+    outline: none
+    border: none
+    display: none
+    cursor: pointer
+    @media (max-width: 1264px)
+      margin-top: 4px
+      width: 40px
+      height: 20px
+      display: flex
+      flex-direction: column
+      justify-content: space-between
+      align-items: center
+    &__line
+      width: 100%
+      height: 2px
+      background: black
 .categories
   margin: 0
   padding: 0
   @media (max-width: 1264px)
-    width: 100%
-    display: flex
-    justify-content: space-between
+    display: none
   &__item
     margin-bottom: 16px
     list-style: none

@@ -8,14 +8,18 @@ export const getters = {
     return state.cart
   },
   count (state) {
-    return state.cart.length
+    if (state.cart) {
+      return state.cart.length
+    }
   },
   hasIt: state => (id) => {
-    return state.cart.find((p) => {
-      if (p === id) {
-        return true
-      }
-    })
+    if (state.cart) {
+      return state.cart.find((p) => {
+        if (p === id) {
+          return true
+        }
+      })
+    }
   }
 }
 export const mutations = {
@@ -47,7 +51,11 @@ export const actions = {
     commit('remove', payload)
   },
   read ({ commit }) {
-    commit('read', JSON.parse(cookie.get('cart')))
+    if (JSON.parse(cookie.get('cart')) === null) {
+      commit('read', [])
+    } else {
+      commit('read', JSON.parse(cookie.get('cart')))
+    }
   },
   clear ({ commit }) {
     commit('clear')

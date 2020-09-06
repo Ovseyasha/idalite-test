@@ -136,13 +136,15 @@
               </h2>
               <button class="modal__btn" @click="modal = !modal">Перейти к выбору</button>
             </template>
-            <template v-if="checkout">
-              <div class="modal__chekout">
-                <img src="/check.png" alt="check">
-                <h2>Заявка успешно отправлена</h2>
-                <p>Вскоре наш менеджер свяжется с Вами</p>
-              </div>
+            <transition enter-active-class="animate__animated animate__fadeIn">
+              <template v-if="checkout">
+                <div class="modal__chekout">
+                  <img src="/check.png" alt="check">
+                  <h2>Заявка успешно отправлена</h2>
+                  <p>Вскоре наш менеджер свяжется с Вами</p>
+                </div>
             </template>
+            </transition>
           </div>
         </div>
       </div>
